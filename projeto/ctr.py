@@ -40,7 +40,8 @@ class Disciplina(BaseModel):
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
     ## adicionar campo de notas que atenda aos requerimentos - mais de uma nota por disciplina
 
-    #TODO corrigir schema
+
+#TODO corrigir schema
     class Config:
         schema_extra = {
             "example": {
@@ -70,7 +71,7 @@ async def update_item(item_id: int, item: Item):
 #DO TUTORIAL - FIM
  """
 
- 
+
 
 #TODO REQ-01
 @notas.post("/disciplina/{Disciplina}")
