@@ -16,10 +16,10 @@
 #                             CHECKLIST
 #
 # [x] PUT         REQ-01      usuário pode criar disciplina
-# [ ] GET         REQ-02      disciplina tem nome único (obrigatório)
-# [ ] GET         REQ-03      disciplina tem nome de professor (opcional)
-# [ ] GET         REQ-04      disciplina tem campo de anotação livre (texto)
-# [ ] DELETE      REQ-05      usuário pode deletar disciplina
+# [x] GET         REQ-02      disciplina tem nome único (obrigatório)
+# [x] GET         REQ-03      disciplina tem nome de professor (opcional)
+# [x] GET         REQ-04      disciplina tem campo de anotação livre (texto)
+# [x] DELETE      REQ-05      usuário pode deletar disciplina
 # [ ] GET         REQ-06      usuário pode listar os nomes de suas disciplinas
 # [ ] PUT         REQ-07      usuário pode modificar as informações de uma disciplina, incluindo seu nome
 # [ ] POST        REQ-08      usuário pode adicionar uma nota a uma disciplina
@@ -40,7 +40,7 @@ class Disciplina(BaseModel):
     description: Optional[str] = Field(None, example="DBA")
     professor: Optional[str] = Field(None, example="Fábio Ayres")
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
-    grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+    #grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
     class Config:
         schema_extra = {
@@ -49,16 +49,13 @@ class Disciplina(BaseModel):
                 "description": "DBA",
                 "professor": "FÁBIO AYRES",
                 "annotation": "Lorem ipsum dolor sit amet",
-                "grade": "{'P1': 8.25}"
+                #"grade": "{'P1': 8.25}"
             }
         }
 
 
-#REQ-01
-#REQ-02
-#REQ-03
-#REQ-04
-#TODO verificar bug de campos opcionais estarem como requeridos na aplicação
+# REQ-01 | REQ-02 | REQ-03 | REQ-04
+# TODO verificar bug de campos opcionais estarem como requeridos na aplicação
 
 #   Inicialmente, seria mais intuitivo usar o método POST por se tratar de criação de novos recursos. Porém, pensando em termos de idempotência, optamos por usar o método PUT, com base nas informações constantes das páginas 10, 12 e 13 do manual "RESTful Service Best Practices" de Todd Fredrich. 
 
@@ -73,37 +70,22 @@ async def CriaDisciplinas(course: str, description: Optional[str], professor: Op
     return {"course": course} 
 
 
-#TODO REQ-05
-@notas.delete("/disciplina/{course}")
-async def ApagaDisciplinas(args):
+# REQ-05
+@notas.delete("/disciplinas/{course}")
+async def ApagaDisciplinas(course):
     return None
 
 #TODO REQ-06
-@notas.get("/disciplina/{course}")
-async def ListaDisciplinas(args):
-    return None
+
 
 #TODO REQ-07
-@notas.put("/disciplina/{course}")
-async def AtualizaDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
-    return None
+
 
 #TODO REQ-08
-@notas.post("/disciplina/{course}")
-async def PublicaNotas(args):
-    return None
 
-#TODO REQ-09
-@notas.delete("/disciplina/{course}")
-async def ApagaNotas(args):
-    return None
 
 #TODO REQ-10
-@notas.get("/disciplina/{course}")
-async def ListaNotas(args):
-    return None
+
 
 #TODO REQ-11
-@notas.put("/disciplina/{course}")
-async def AtualizaNotas(args):
-    return None
+
