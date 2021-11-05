@@ -54,7 +54,7 @@ class Disciplina(BaseModel):
         }
 
 
-# REQ-01 | REQ-02 | REQ-03 | REQ-04
+# REQ-01 | REQ-02 | REQ-03 | REQ-04 | REQ-06
 # TODO verificar bug de campos opcionais estarem como requeridos na aplicação
 
 #   Inicialmente, seria mais intuitivo usar o método POST por se tratar de criação de novos recursos. Porém, pensando em termos de idempotência, optamos por usar o método PUT, com base nas informações constantes das páginas 10, 12 e 13 do manual "RESTful Service Best Practices" de Todd Fredrich. 
@@ -63,11 +63,16 @@ class Disciplina(BaseModel):
 
 #   Além disso, o requisito REQ-02 exige que a disciplina tenha nome único. Para isso ser possível em REST, o recurso tem que obrigatoriamente ser idempotente. Se usássemos POST, não seria idempotente e, portanto, violaríamos REQ-02. Portanto, o único método correto para a criação de disciplinas é o PUT. 
 
-#   Esta chamada satisfaz REQ-01 (usuário pode criar disciplina), bem como REQ-02, REQ-03 e REQ-04, tendo os campos requeridos que uma disciplina possua.
+#   Esta chamada satisfaz REQ-01 (usuário pode criar disciplina), bem como REQ-02, REQ-03 e REQ-04, tendo os campos requeridos que uma disciplina possua. Também é uma implementação parcial do REQ-06, que será completado mais abaixo. 
 
 @notas.put("/disciplinas/{course}")
-async def CriaDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
+async def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
     return {"course": course} 
+
+#TODO verificar bug - 500 internal server error
+@notas.get("/disciplinas/{course}")
+async def GetDisciplinas(course: str):
+    return {"course": course, "description": description, "professor": professor, "annotation": annotation} 
 
 
 # REQ-05
@@ -76,6 +81,13 @@ async def ApagaDisciplinas(course):
     return None
 
 #TODO REQ-06
+#   Usamos PUT para a criação da disciplina acima. O mesmo comando pode atualizar qualquer um dos componentes da disciplina, exceto seu nome. Ou seja, executar PUT/disciplinas/{course} acima já atualiza por si só conteúdo existente, mas não o nome da disciplina. Para isso, criamos este método que especificamente tem por intenção atualizar o nome da disciplina. As demais atualizações do REQ-06 vêm junto com o recurso que implementou REQ-01 acima. 
+
+@notas.put("/disciplinas/rename/{course}")
+async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], professor: Optional[str], annotation: Optional[str], newcourse: str): 
+    PutDisciplinas(newcourse, description, professor, annotation)
+    ApagaDisciplinas(oldcourse)
+    return {"course": newcourse}
 
 
 #TODO REQ-07
