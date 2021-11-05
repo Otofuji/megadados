@@ -95,7 +95,7 @@ async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], profes
     ApagaDisciplinas(oldcourse)
     return {"course": newcourse}
 
-#TODO REQ-08
+
 
 
 #TODO REQ-10
