@@ -15,7 +15,7 @@
 
 #                             CHECKLIST
 #
-# [ ] POST        REQ-01      usuário pode criar disciplina
+# [x] PUT         REQ-01      usuário pode criar disciplina
 # [ ] GET         REQ-02      disciplina tem nome único (obrigatório)
 # [ ] GET         REQ-03      disciplina tem nome de professor (opcional)
 # [ ] GET         REQ-04      disciplina tem campo de anotação livre (texto)
@@ -36,97 +36,83 @@ from pydantic import BaseModel, Field
 notas = FastAPI()
 
 class Disciplina(BaseModel):
-    name: str = Field(..., example="Megadados")
+    course: str = Field(..., example="Megadados")
     description: Optional[str] = Field(None, example="DBA")
     professor: Optional[str] = Field(None, example="Fábio Ayres")
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
-    grade: Dict[str, float] = Field(..., example={'P1': 8.25}, description="grades dict") #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html -> https://www.programcreek.com/python/example/112465/pydantic.Field
+    grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
 
-
-#TODO corrigir schema
     class Config:
         schema_extra = {
             "example": {
-                "name": "MEGADADOS",
+                "course": "MEGADADOS",
                 "description": "DBA",
                 "professor": "FÁBIO AYRES",
                 "annotation": "Lorem ipsum dolor sit amet",
                 "grade": "{'P1': 8.25}"
             }
         }
-""" 
-#DO TUTORIAL - INICIO
-@notas.get("/")
-async def read_root():
-    return {"Hello": "World"}
 
 
-@notas.get("/items/{item_id}")0
-async def read_item(item_id: int, q: Optional[str] = None):
-    if item_id not in items:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return {"item_id": item_id, "q": q}
+#REQ-01
 
-@notas.put("/items/{item_id}")
-async def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id} 
+#   Inicialmente, seria mais intuitivo usar o método POST por se tratar de criação de novos recursos. Porém, pensando em termos de idempotência, optamos por usar o método PUT, com base nas informações constantes das páginas 10, 12 e 13 do manual "RESTful Service Best Practices" de Todd Fredrich. 
 
-#DO TUTORIAL - FIM
- """
+#   Vale ressaltar que PUT, embora normalmente usado para atualização de recursos, também pode ser usado para criação de recursos quando é importante que seja idempotente. Todd Fredrich ainda adiciona que devemos usar PUT quando o cliente está a cargo de decidir qual é a URI, que é exatamente o caso aqui: o usuário define o nome da disciplina. 
 
+#   Além disso, o requisito REQ-02 exige que a disciplina tenha nome único. Para isso ser possível em REST, o recurso tem que obrigatoriamente ser idempotente. Se usássemos POST, não seria idempotente e, portanto, violaríamos REQ-02. Portanto, o único método correto para a criação de disciplinas é o PUT. 
 
+@notas.put("/disciplinas/{course}")
+async def CriaDisciplinas(course: str):
+    return {"course": course} 
 
-#TODO REQ-01
-@notas.post("/{Disciplina}")
-async def CriaDisciplinas(name: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
-    return None
 
 #TODO REQ-02
-@notas.get("/disciplina/{Disciplina}")
+@notas.get("/disciplina/{course}")
 async def DisciplinaNomes(args):
     return None
 
 #TODO REQ-03
-@notas.get("/disciplina/{Disciplina}")
+@notas.get("/disciplina/{course}")
 async def DisciplinaProfessores(args):
     return None
 
 #TODO REQ-04
-@notas.get("/disciplina/{Disciplina}")
+@notas.get("/disciplina/{course}")
 async def DisciplinaTextos(args):
     return None
 
 #TODO REQ-05
-@notas.delete("/disciplina/{Disciplina}")
+@notas.delete("/disciplina/{course}")
 async def ApagaDisciplinas(args):
     return None
 
 #TODO REQ-06
-@notas.get("/disciplina/{Disciplina}")
+@notas.get("/disciplina/{course}")
 async def ListaDisciplinas(args):
     return None
 
 #TODO REQ-07
-@notas.put("/disciplina/{Disciplina}")
-async def AtualizaDisciplinas(name: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
+@notas.put("/disciplina/{course}")
+async def AtualizaDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
     return None
 
 #TODO REQ-08
-@notas.post("/disciplina/{Disciplina}")
+@notas.post("/disciplina/{course}")
 async def PublicaNotas(args):
     return None
 
 #TODO REQ-09
-@notas.delete("/disciplina/{Disciplina}")
+@notas.delete("/disciplina/{course}")
 async def ApagaNotas(args):
     return None
 
 #TODO REQ-10
-@notas.get("/disciplina/{Disciplina}")
+@notas.get("/disciplina/{course}")
 async def ListaNotas(args):
     return None
 
 #TODO REQ-11
-@notas.put("/disciplina/{Disciplina}")
+@notas.put("/disciplina/{course}")
 async def AtualizaNotas(args):
     return None
