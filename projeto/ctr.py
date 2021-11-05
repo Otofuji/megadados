@@ -8,6 +8,8 @@
 # $ pip install fastapi
 # $ pip install "uvicorn[standard]"
 
+#COMPATIBLE WITH PYTHON 3.8.8
+
 # RUN SERVER USING
 # $ uvicorn ctr:notas --reload
 
@@ -27,7 +29,7 @@
 #
 #####################################
 
-from typing import Optional
+from typing import Optional, Dict
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
@@ -38,17 +40,18 @@ class Disciplina(BaseModel):
     description: Optional[str] = Field(None, example="DBA")
     professor: Optional[str] = Field(None, example="Fábio Ayres")
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
-    ## adicionar campo de notas que atenda aos requerimentos - mais de uma nota por disciplina
+    grade: Dict[str, float] = Field(..., example={'P1': 8.25}, description="grades dict") #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html -> https://www.programcreek.com/python/example/112465/pydantic.Field
 
 
 #TODO corrigir schema
     class Config:
         schema_extra = {
             "example": {
-                "name": "Foo",
-                "description": "A very nice Item",
-                "price": 35.4,
-                "tax": 3.2,
+                "name": "MEGADADOS",
+                "description": "DBA",
+                "professor": "FÁBIO AYRES",
+                "annotation": "Lorem ipsum dolor sit amet",
+                "grade": "{'P1': 8.25}"
             }
         }
 """ 
@@ -58,7 +61,7 @@ async def read_root():
     return {"Hello": "World"}
 
 
-@notas.get("/items/{item_id}")
+@notas.get("/items/{item_id}")0
 async def read_item(item_id: int, q: Optional[str] = None):
     if item_id not in items:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -74,7 +77,7 @@ async def update_item(item_id: int, item: Item):
 
 
 #TODO REQ-01
-@notas.post("/disciplina/{Disciplina}")
+@notas.post("/{Disciplina}")
 async def CriaDisciplinas(name: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
     return None
 
