@@ -21,7 +21,7 @@
 # [x] GET         REQ-04      disciplina tem campo de anotação livre (texto)
 # [x] DELETE      REQ-05      usuário pode deletar disciplina
 # [ ] GET         REQ-06      usuário pode listar os nomes de suas disciplinas
-# [ ] PUT         REQ-07      usuário pode modificar as informações de uma disciplina, incluindo seu nome
+# [x] PUT         REQ-07      usuário pode modificar as informações de uma disciplina, incluindo seu nome
 # [ ] POST        REQ-08      usuário pode adicionar uma nota a uma disciplina
 # [ ] DELETE      REQ-09      usuário pode deletar uma nota de uma disciplina
 # [ ] GET         REQ-10      usuário pode listar as notas de uma disciplina
@@ -80,7 +80,7 @@ async def GetDisciplinas(course: str):
 async def ApagaDisciplinas(course):
     return None
 
-#TODO REQ-06
+#REQ-06
 #   Usamos PUT para a criação da disciplina acima. O mesmo comando pode atualizar qualquer um dos componentes da disciplina, exceto seu nome. Ou seja, executar PUT/disciplinas/{course} acima já atualiza por si só conteúdo existente, mas não o nome da disciplina. Para isso, criamos este método que especificamente tem por intenção atualizar o nome da disciplina. As demais atualizações do REQ-06 vêm junto com o recurso que implementou REQ-01 acima. 
 
 @notas.put("/disciplinas/rename/{course}")
