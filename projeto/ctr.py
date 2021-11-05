@@ -40,7 +40,7 @@ class Disciplina(BaseModel):
     description: Optional[str] = Field(None, example="DBA")
     professor: Optional[str] = Field(None, example="Fábio Ayres")
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
-    #grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html
+    #grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html # CANCELADO - VER NOTAM abaixo
 
     class Config:
         schema_extra = {
@@ -49,12 +49,12 @@ class Disciplina(BaseModel):
                 "description": "DBA",
                 "professor": "FÁBIO AYRES",
                 "annotation": "Lorem ipsum dolor sit amet",
-                #"grade": "{'P1': 8.25}"
+                #"grade": "{'P1': 8.25}" #CANCELADO - VER NOTAM abaixo
             }
         }
 
 
-# REQ-01 | REQ-02 | REQ-03 | REQ-04 | REQ-06
+# REQ-01 | REQ-02 | REQ-03 | REQ-04 | REQ-07 | REQ-08 | REQ-09 | REQ-11
 # TODO verificar bug de campos opcionais estarem como requeridos na aplicação
 
 #   Inicialmente, seria mais intuitivo usar o método POST por se tratar de criação de novos recursos. Porém, pensando em termos de idempotência, optamos por usar o método PUT, com base nas informações constantes das páginas 10, 12 e 13 do manual "RESTful Service Best Practices" de Todd Fredrich. 
@@ -63,7 +63,9 @@ class Disciplina(BaseModel):
 
 #   Além disso, o requisito REQ-02 exige que a disciplina tenha nome único. Para isso ser possível em REST, o recurso tem que obrigatoriamente ser idempotente. Se usássemos POST, não seria idempotente e, portanto, violaríamos REQ-02. Portanto, o único método correto para a criação de disciplinas é o PUT. 
 
-#   Esta chamada satisfaz REQ-01 (usuário pode criar disciplina), bem como REQ-02, REQ-03 e REQ-04, tendo os campos requeridos que uma disciplina possua. Também é uma implementação parcial do REQ-06, que será completado mais abaixo. 
+#   Esta chamada satisfaz REQ-01 (usuário pode criar disciplina), bem como REQ-02, REQ-03 e REQ-04, tendo os campos requeridos que uma disciplina possua. Também é uma implementação parcial do REQ-07, que será completado mais abaixo. Além disso, ele também permite atualizar os dados em cada disciplina, satisfazendo REQ-08, REQ-09 e REQ-11. 
+
+#   NOTAM: inicialmente, pensamos em utilizar um dicionário para armazenar notas. Porém, no grupo da sala, foi avisado que o armazenamento de nota é apenas o campo "annotation" em string mesmo. Então, comentamos o campo que incluiria um dicionário após recebermos essa informação. Adicionalmente, notamos que os requisitos referentes à inclusão, remoção e edição de notas nada mais são do que mais do mesmo: um PUT do campo annotation. Ou seja, para fins de API, o comando PUT abaixo já permite fazer boa parte do que foi elencado nos requisitos de projeto.
 
 @notas.put("/disciplinas/{course}")
 async def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
