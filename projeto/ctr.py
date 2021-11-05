@@ -55,6 +55,10 @@ class Disciplina(BaseModel):
 
 
 #REQ-01
+#REQ-02
+#REQ-03
+#REQ-04
+#TODO verificar bug de campos opcionais estarem como requeridos na aplicação
 
 #   Inicialmente, seria mais intuitivo usar o método POST por se tratar de criação de novos recursos. Porém, pensando em termos de idempotência, optamos por usar o método PUT, com base nas informações constantes das páginas 10, 12 e 13 do manual "RESTful Service Best Practices" de Todd Fredrich. 
 
@@ -62,15 +66,12 @@ class Disciplina(BaseModel):
 
 #   Além disso, o requisito REQ-02 exige que a disciplina tenha nome único. Para isso ser possível em REST, o recurso tem que obrigatoriamente ser idempotente. Se usássemos POST, não seria idempotente e, portanto, violaríamos REQ-02. Portanto, o único método correto para a criação de disciplinas é o PUT. 
 
+#   Esta chamada satisfaz REQ-01 (usuário pode criar disciplina), bem como REQ-02, REQ-03 e REQ-04, tendo os campos requeridos que uma disciplina possua.
+
 @notas.put("/disciplinas/{course}")
-async def CriaDisciplinas(course: str):
+async def CriaDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
     return {"course": course} 
 
-
-#TODO REQ-02
-@notas.get("/disciplina/{course}")
-async def DisciplinaNomes(args):
-    return None
 
 #TODO REQ-03
 @notas.get("/disciplina/{course}")
