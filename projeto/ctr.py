@@ -98,5 +98,8 @@ async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], profes
 
 
 
-#TODO REQ-10
+#REQ-10
+@notas.get("disciplinas/{course}/grades")
+async def Notas(course: str):
+    return ("notas": annotation)
 
