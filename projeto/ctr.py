@@ -22,10 +22,10 @@
 # [x] DELETE      REQ-05      usuário pode deletar disciplina
 # [ ] GET         REQ-06      usuário pode listar os nomes de suas disciplinas
 # [x] PUT         REQ-07      usuário pode modificar as informações de uma disciplina, incluindo seu nome
-# [ ] POST        REQ-08      usuário pode adicionar uma nota a uma disciplina
-# [ ] DELETE      REQ-09      usuário pode deletar uma nota de uma disciplina
+# [x] PUT         REQ-08      usuário pode adicionar uma nota a uma disciplina
+# [x] DELETE      REQ-09      usuário pode deletar uma nota de uma disciplina
 # [ ] GET         REQ-10      usuário pode listar as notas de uma disciplina
-# [ ] PUT         REQ-11      usuário pode modificar uma nota de uma disciplina
+# [x] PUT         REQ-11      usuário pode modificar uma nota de uma disciplina
 #
 #####################################
 
@@ -80,8 +80,10 @@ async def GetDisciplinas(course: str):
 async def ApagaDisciplinas(course):
     return None
 
-#REQ-06
-
+#TODO REQ-06
+@notas.get("/disciplinas")
+async def ListaDisciplinas():
+    return 
 
 
 #REQ-07
@@ -97,7 +99,4 @@ async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], profes
 
 
 #TODO REQ-10
-
-
-#TODO REQ-11
 
