@@ -83,7 +83,7 @@ async def ApagaDisciplinas(course):
 #TODO REQ-06
 @notas.get("/disciplinas")
 async def ListaDisciplinas():
-    return 
+    return None
 
 
 #REQ-07
