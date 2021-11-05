@@ -81,6 +81,10 @@ async def ApagaDisciplinas(course):
     return None
 
 #REQ-06
+
+
+
+#REQ-07
 #   Usamos PUT para a criação da disciplina acima. O mesmo comando pode atualizar qualquer um dos componentes da disciplina, exceto seu nome. Ou seja, executar PUT/disciplinas/{course} acima já atualiza por si só conteúdo existente, mas não o nome da disciplina. Para isso, criamos este método que especificamente tem por intenção atualizar o nome da disciplina. As demais atualizações do REQ-06 vêm junto com o recurso que implementou REQ-01 acima. 
 
 @notas.put("/disciplinas/rename/{course}")
@@ -88,10 +92,6 @@ async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], profes
     PutDisciplinas(newcourse, description, professor, annotation)
     ApagaDisciplinas(oldcourse)
     return {"course": newcourse}
-
-
-#TODO REQ-07
-
 
 #TODO REQ-08
 
