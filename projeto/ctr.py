@@ -8,7 +8,7 @@
 # $ pip install fastapi
 # $ pip install "uvicorn[standard]"
 
-#COMPATIBLE WITH PYTHON 3.8.8
+# COMPATIBLE WITH PYTHON 3.8.8
 
 # RUN SERVER USING
 # $ uvicorn ctr:notas --reload
