@@ -73,11 +73,6 @@ async def CriaDisciplinas(course: str, description: Optional[str], professor: Op
     return {"course": course} 
 
 
-#TODO REQ-03
-@notas.get("/disciplina/{course}")
-async def DisciplinaProfessores(args):
-    return None
-
 #TODO REQ-04
 @notas.get("/disciplina/{course}")
 async def DisciplinaTextos(args):
