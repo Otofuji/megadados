@@ -20,11 +20,11 @@
 # [x] GET         REQ-03      disciplina tem nome de professor (opcional)
 # [x] GET         REQ-04      disciplina tem campo de anotação livre (texto)
 # [x] DELETE      REQ-05      usuário pode deletar disciplina
-# [ ] GET         REQ-06      usuário pode listar os nomes de suas disciplinas
+# [x] GET         REQ-06      usuário pode listar os nomes de suas disciplinas
 # [x] PUT         REQ-07      usuário pode modificar as informações de uma disciplina, incluindo seu nome
 # [x] PUT         REQ-08      usuário pode adicionar uma nota a uma disciplina
 # [x] DELETE      REQ-09      usuário pode deletar uma nota de uma disciplina
-# [ ] GET         REQ-10      usuário pode listar as notas de uma disciplina
+# [x] GET         REQ-10      usuário pode listar as notas de uma disciplina
 # [x] PUT         REQ-11      usuário pode modificar uma nota de uma disciplina
 #
 #####################################
@@ -33,7 +33,19 @@ from typing import Optional, Dict
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-notas = FastAPI()
+notas = FastAPI(title="Controle de Notas",
+    description='Projeto da disciplina Megadados',
+    version="0.0.1",
+    terms_of_service="https://github.com/Otofuji/megadados",
+    contact={
+        "name": "Eric Fernando Otofuji Abrantes, Henrique Mualem Marti, Marco Moliterno Pena Piacentini",
+        "url": "https://github.com/Otofuji/megadados",
+        "email": "ericfoa@al.insper.edu.br",
+    },
+    license_info={
+        "name": "Apache 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+    },)
 
 class Disciplina(BaseModel):
     course: str = Field(..., example="Megadados")
@@ -42,16 +54,16 @@ class Disciplina(BaseModel):
     annotation: Optional[str] = Field(None, example="Lorem ipsum dolor sit amet")
     #grade: Dict[str, float] #https://mypy.readthedocs.io/en/stable/cheat_sheet_py3.html # CANCELADO - VER NOTAM abaixo
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "course": "MEGADADOS",
-                "description": "DBA",
-                "professor": "FÁBIO AYRES",
-                "annotation": "Lorem ipsum dolor sit amet",
-                #"grade": "{'P1': 8.25}" #CANCELADO - VER NOTAM abaixo
-            }
+class Config:
+    schema_extra = {
+        "example": {
+            "course": "MEGADADOS",
+            "description": "DBA",
+            "professor": "FÁBIO AYRES",
+            "annotation": "Lorem ipsum dolor sit amet",
+            #"grade": "{'P1': 8.25}" #CANCELADO - VER NOTAM abaixo
         }
+    }
 
 #   Meste primeiro momento, não guardaremos os dados em um banco de dados propriamente dito, mas usaremos estruturas de dados do Python para armazenamento de arquivos. Dentre as opções disponíveis, optamos pela escolha do dicionário. Um dicionário tem exatamente as propriedades de dados que estamos buscando, quais sejam: seus itens são únicos, não permitindo a existência de duplicadas (REQ-02) e os dados estão organizados em chaves, em uma configuração muito próxima da que usamos em REST. Como característica adicional, até o Python 3.6.x, dicionários eram uma estrutura de dados não ordenada, e a partir do Python 3.7 passou a ser uma estrutura de dados ordenada. Essa característica não nos é essencial e qualquer uma das opções serve. Projeto foi implementado usando Python 3.8.8 e. portanto, nossa estrutura de dados é ordenada.
 
@@ -80,37 +92,45 @@ async def PutDisciplinas(course: str, description: Optional[str], professor: Opt
     return {"course": course} 
 
 
-#TODO verificar bug - 500 internal server error
 @notas.get("/disciplinas/{course}")
 async def GetDisciplinas(course: str):
-    return {"course": course, "description": description, "professor": professor, "annotation": annotation} 
+    if (course in db): 
+        course: str = db[course]['course'] #https://www.programiz.com/python-programming/nested-dictionary
+        description: str = db[course]['description']
+        professor: str = db[course]['professor']
+        annotation: str = db[course]['annotation']
+    else:
+        course: str = 'NIHIL'
+        description: str = 'this course does not exist - you should create it first'
+        professor: str = '404'
+        annotation: str = 'D'
+    return {'course': course, "description": description, "professor": professor, "annotation": annotation} 
 
 
 # REQ-05
 @notas.delete("/disciplinas/{course}")
 async def ApagaDisciplinas(course):
-    return None
+    if (course in db):
+        del db[course]
+        course: str = 'deleted'
+    else:
+        course: str = 'someone was faster than you and deleted it first - no worries, it does not exist anyway'
+    return {'course': course}
 
-#TODO REQ-06
 @notas.get("/disciplinas")
 async def ListaDisciplinas():
-    return None
-
-
-#REQ-07
-#   Usamos PUT para a criação da disciplina acima. O mesmo comando pode atualizar qualquer um dos componentes da disciplina, exceto seu nome. Ou seja, executar PUT/disciplinas/{course} acima já atualiza por si só conteúdo existente, mas não o nome da disciplina. Para isso, criamos este método que especificamente tem por intenção atualizar o nome da disciplina. As demais atualizações do REQ-06 vêm junto com o recurso que implementou REQ-01 acima. 
+    return {'all courses': db}
 
 @notas.put("/disciplinas/rename/{course}")
-async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], professor: Optional[str], annotation: Optional[str], newcourse: str): 
-    PutDisciplinas(newcourse, description, professor, annotation)
-    ApagaDisciplinas(oldcourse)
-    return {"course": newcourse}
-
-
-
+async def RenomeiaDisciplinas(currentname: str, newname: str): 
+    if (currentname in db): 
+        db[currentname].update({'course': newname})
+    return {'course': newname}
 
 #REQ-10
-@notas.get("disciplinas/{course}/grades")
+@notas.get("/disciplinas/{course}/grades")
 async def Notas(course: str):
-    return {"notas": annotation}
+    notas: str = db[course]['annotation']
+    print(db[course]['annotation'])
+    return {'notas': notas}
 
