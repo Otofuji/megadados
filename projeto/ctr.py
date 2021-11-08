@@ -53,6 +53,11 @@ class Disciplina(BaseModel):
             }
         }
 
+#   Meste primeiro momento, não guardaremos os dados em um banco de dados propriamente dito, mas usaremos estruturas de dados do Python para armazenamento de arquivos. Dentre as opções disponíveis, optamos pela escolha do dicionário. Um dicionário tem exatamente as propriedades de dados que estamos buscando, quais sejam: seus itens são únicos, não permitindo a existência de duplicadas (REQ-02) e os dados estão organizados em chaves, em uma configuração muito próxima da que usamos em REST. Como característica adicional, até o Python 3.6.x, dicionários eram uma estrutura de dados não ordenada, e a partir do Python 3.7 passou a ser uma estrutura de dados ordenada. Essa característica não nos é essencial e qualquer uma das opções serve. Projeto foi implementado usando Python 3.8.8 e. portanto, nossa estrutura de dados é ordenada.
+
+db = {}
+
+#   Porém, vale notar outra coisa. A própria forma de dicionários, da forma como está, não permite incluir vários cursos. Se implementássemos apenas como está acima, não seria possível ter mais que uma disciplina. Veja https://www.w3schools.com/python/python_dictionaries.asp para mais detalhes. Para contornar esse problema, usaremos dicionários aninhados em um dicionário maior, batendo chaves no nome do curso. Para referência, https://stackoverflow.com/questions/16333296/how-do-you-create-nested-dict-in-python e https://www.programiz.com/python-programming/nested-dictionary. Criaremos os dicionários internos on-the-go.
 
 # REQ-01 | REQ-02 | REQ-03 | REQ-04 | REQ-07 | REQ-08 | REQ-09 | REQ-11
 # TODO verificar bug de campos opcionais estarem como requeridos na aplicação
@@ -69,7 +74,11 @@ class Disciplina(BaseModel):
 
 @notas.put("/disciplinas/{course}")
 async def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
+    if (course not in db): #https://stackoverflow.com/questions/1602934/check-if-a-given-key-already-exists-in-a-dictionary
+        db[course] = {}
+    db[course].update({'course': course, 'description': description, 'professor': professor, 'annotation': annotation})
     return {"course": course} 
+
 
 #TODO verificar bug - 500 internal server error
 @notas.get("/disciplinas/{course}")
@@ -103,5 +112,5 @@ async def RenomeiaDisciplinas(oldcourse: str, description: Optional[str], profes
 #REQ-10
 @notas.get("disciplinas/{course}/grades")
 async def Notas(course: str):
-    return ("notas": annotation)
+    return {"notas": annotation}
 
