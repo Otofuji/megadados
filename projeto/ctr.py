@@ -7,6 +7,7 @@
 # $ python -m pip install --upgrade pip
 # $ pip install fastapi
 # $ pip install "uvicorn[standard]"
+# $ pip install SQLAlchemy
 
 # COMPATIBLE WITH PYTHON 3.8.8
 
@@ -32,6 +33,14 @@
 from typing import Optional, Dict
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy import create_engine
+
+engine = create_engine("mysql")
+
+with engine.connect() as conn:
+    result = conn.execute(
+        #TODO
+    )
 
 notas = FastAPI(title="Controle de Notas",
     description='Projeto da disciplina Megadados',

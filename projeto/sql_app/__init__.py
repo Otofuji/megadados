@@ -1,0 +1,1 @@
+#   Este é um arquivo vazio que serve apenas para dizer para o Python que a pasta sql_app é um pacote, junto com todos os seus módulos (outros arquivos Python que constam neste diretório)
