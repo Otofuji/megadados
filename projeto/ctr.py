@@ -1,6 +1,5 @@
 # git@github.com:Otofuji/megadados.git
 # https://fastapi.tiangolo.com
-# async version
 
 #####################################
 # REQUIREMENTS
@@ -41,6 +40,12 @@ with engine.connect() as conn:
     result = conn.execute(
         #TODO
     )
+
+##################
+
+##################
+
+
 
 notas = FastAPI(title="Controle de Notas",
     description='Projeto da disciplina Megadados',
@@ -94,7 +99,7 @@ db = {}
 #   NOTAM: inicialmente, pensamos em utilizar um dicionário para armazenar notas. Porém, no grupo da sala, foi avisado que o armazenamento de nota é apenas o campo "annotation" em string mesmo. Então, comentamos o campo que incluiria um dicionário após recebermos essa informação. Adicionalmente, notamos que os requisitos referentes à inclusão, remoção e edição de notas nada mais são do que mais do mesmo: um PUT do campo annotation. Ou seja, para fins de API, o comando PUT abaixo já permite fazer boa parte do que foi elencado nos requisitos de projeto.
 
 @notas.put("/disciplinas/{course}")
-async def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
+def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
     if (course not in db): #https://stackoverflow.com/questions/1602934/check-if-a-given-key-already-exists-in-a-dictionary
         db[course] = {}
     db[course].update({'course': course, 'description': description, 'professor': professor, 'annotation': annotation})
@@ -102,7 +107,7 @@ async def PutDisciplinas(course: str, description: Optional[str], professor: Opt
 
 
 @notas.get("/disciplinas/{course}")
-async def GetDisciplinas(course: str):
+def GetDisciplinas(course: str):
     if (course in db): 
         course: str = db[course]['course'] #https://www.programiz.com/python-programming/nested-dictionary
         description: str = db[course]['description']
@@ -118,7 +123,7 @@ async def GetDisciplinas(course: str):
 
 # REQ-05
 @notas.delete("/disciplinas/{course}")
-async def ApagaDisciplinas(course):
+def ApagaDisciplinas(course):
     if (course in db):
         del db[course]
         course: str = 'deleted'
@@ -127,18 +132,18 @@ async def ApagaDisciplinas(course):
     return {'course': course}
 
 @notas.get("/disciplinas")
-async def ListaDisciplinas():
+def ListaDisciplinas():
     return {'all courses': db}
 
 @notas.put("/disciplinas/rename/{course}")
-async def RenomeiaDisciplinas(currentname: str, newname: str): 
+def RenomeiaDisciplinas(currentname: str, newname: str): 
     if (currentname in db): 
         db[currentname].update({'course': newname})
     return {'course': newname}
 
 #REQ-10
 @notas.get("/disciplinas/{course}/grades")
-async def Notas(course: str):
+def Notas(course: str):
     notas: str = db[course]['annotation']
     print(db[course]['annotation'])
     return {'notas': notas}
