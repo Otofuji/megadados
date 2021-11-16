@@ -3,34 +3,30 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
-
-
-def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
-
-
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
-def create_user(db: Session, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
-    db.add(db_user)
+def put_disciplina(db: Session, course: schemas.DisciplinaCreate):
+    db_disciplina = models.Disciplina(course = disciplina.course, description = disciplina.description, professor = disciplina.professor, annotation = disciplina.annotation)
+    db.add(db_disciplina)
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(db_disciplina)
+    return db_disciplina
 
+#   get_discipliNA, no singular
+def get_disciplina(db: Session, course: str):
+    return db.query(models.Disciplina).filter(models.Disciplina.course == course).first()
 
-def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
+def del_disciplina(db: Session, course:str):
+    db.delete(db.disciplina).where(db.disciplina.course == course) #https://docs.sqlalchemy.org/en/14/core/dml.html
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    return None
+
+#   get_discipliNAS, no plural
+def get_disciplinas(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Disciplina).offset(skip).limit(limit).all()
+
+def rnm_disciplina(db: Session, currentname: str, newname: str):
+    db.update(db.disciplina).where(db.disciplina.course == currentname).values(course = newname) #https://docs.sqlalchemy.org/en/14/core/dml.html
+    db.commit()
+    return None
+
+def get_grade(db: Session, course: str):
+    return db.query(models.Disciplina.annotation).filter(models.Disciplina.course == course).first()

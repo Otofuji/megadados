@@ -18,4 +18,12 @@ class Disciplina(ItemBase):
     
     class Config:
         orm_mode = True
-
+        schema_extra = {
+        "example": {
+            "course": "MEGADADOS",
+            "description": "DBA",
+            "professor": "FÁBIO AYRES",
+            "annotation": "Lorem ipsum dolor sit amet",
+         
+           }
+        }

@@ -34,17 +34,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import create_engine
 
-engine = create_engine("mysql")
-
-with engine.connect() as conn:
-    result = conn.execute(
-        #TODO
-    )
-
-##################
-
-##################
-
 
 
 notas = FastAPI(title="Controle de Notas",
