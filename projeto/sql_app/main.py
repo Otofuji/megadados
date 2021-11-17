@@ -7,6 +7,7 @@
 # $ pip install fastapi
 # $ pip install "uvicorn[standard]"
 # $ pip install SQLAlchemy
+# $ pip install pymysql
 
 # COMPATIBLE WITH PYTHON 3.8.8
 
