@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+import models, schemas
 
 
 def put_disciplina(db: Session, course: schemas.DisciplinaCreate):

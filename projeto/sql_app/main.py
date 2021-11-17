@@ -32,7 +32,7 @@
 from typing import Optional, Dict, List
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-from . import crud, models, schemas
+import crud, models, schemas
 from .database import SessionLocal, engine
 from pydantic import BaseModel, Field
 
@@ -62,36 +62,30 @@ def get_db():
         db.close()
 
 @notas.put("/disciplinas/{course}")
-def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str]):
-    schemas = {
-            "course": course,
-            "description":  description,
-            "professor": professor,
-            "annotation": annotation,
-    }
+def PutDisciplinas(course: str, description: Optional[str], professor: Optional[str], annotation: Optional[str], db: Session = Depends(get_db)):
+    
+    db_disciplina = crud.put_disciplina(db=db, course=disciplina.course)
 
-    db_disciplina = crud.put_disciplina(db=db, schemas)
-
-    return crud.get_disciplina(db=db, course)
+    return crud.get_disciplina(db=db, course=course)
 
 
 @notas.get("/disciplinas/{course}")
 def GetDisciplinas(course: str):
-    return crud.get_disciplina(db=db, course)
+    return crud.get_disciplina(db=db, course=course)
 
 
 @notas.delete("/disciplinas/{course}")
 def ApagaDisciplinas(course):
-    return crud.del_disciplina(db=db, course)
+    return crud.del_disciplina(db=db, course=course)
 
 @notas.get("/disciplinas")
 def ListaDisciplinas():
-    return crud.get_disciplinas(db=db, 0, 100)
+    return crud.get_disciplinas(db=db, skip=0, limit=100)
 
 @notas.put("/disciplinas/rename/{course}")
 def RenomeiaDisciplinas(currentname: str, newname: str): 
-    return crud.rnm_disciplina(db=db, currentname, newname)
+    return crud.rnm_disciplina(db=db, currentname=currentname, newname=newname)
 
 @notas.get("/disciplinas/{course}/grades")
 def Notas(course: str):
-    return crud.get_grade(db=db, course)
+    return crud.get_grade(db=db, course=course)
